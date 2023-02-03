@@ -4,6 +4,8 @@ import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 import { Container, Title } from './PhoneBook.styled';
 
+const LS_KEY = 'contacts';
+
 class PhoneBook extends Component {
   state = {
     contacts: [
@@ -15,6 +17,20 @@ class PhoneBook extends Component {
 
     filter: '',
   };
+
+  componentDidMount() {
+    const dataNumbers = JSON.parse(localStorage.getItem(LS_KEY));
+
+    if (dataNumbers) {
+      this.setState({ contacts: dataNumbers });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
 
   handlerSubmit = data => {
     this.setState(({ contacts }) =>
@@ -43,7 +59,7 @@ class PhoneBook extends Component {
     const filterContacts = contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
-
+    console.log(contacts);
     return (
       <Container>
         <Title>Phonebook</Title>
